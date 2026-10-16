@@ -1,0 +1,1 @@
+# Copy to favorites.txt and add full TikTok video URLs, one per line.

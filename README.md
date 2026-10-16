@@ -75,3 +75,33 @@ Keep browser profiles, cookies, passwords, personal lists, progress, screenshots
 ```
 
 These tests exercise image matching, color classification, and link validation without opening a browser or sending clicks. Live behavior still depends on the desktop layout and TikTok UI.
+
+## Favorites branch: remove saved videos
+
+The `codex/favorites` branch adds `tiktok_favorites_auto.py`. It targets the **yellow bookmark**, not the red heart. The unliker script remains available unchanged.
+
+After cloning, switch to this branch:
+
+```bash
+git fetch origin
+git switch codex/favorites
+cp favorites.example.txt favorites.txt
+```
+
+Add your saved-video URLs to `favorites.txt`, one per line. Open a saved video in regular Chrome and calibrate on the center of its **yellow bookmark**, then on the address bar:
+
+```bash
+.venv/bin/python tiktok_favorites_auto.py --calibrate --limit 1
+```
+
+The script clicks a yellow bookmark once, reopens the URL using the calibrated address bar, and records completion only if the bookmark is gray. It stops on an unknown state or failed verification. Color and movement checks have automated coverage; the favorites script still needs a one-video live trial before a long run.
+
+```bash
+# Five-video trial after confirming the first test worked
+.venv/bin/python tiktok_favorites_auto.py --turbo --limit 5
+
+# All remaining favorites
+.venv/bin/python tiktok_favorites_auto.py --turbo --limit 0
+```
+
+Favorites use a separate local state directory, `~/.local/state/tiktok-mouse-unfavoriter/` (or under `XDG_STATE_HOME`), so liked-video progress and calibration are not reused. Do not run the favorites and likes scripts simultaneously: both control the same desktop mouse and clipboard. The same stop controls and fixed-window requirements apply.
