@@ -12,3 +12,8 @@ run.lock
 .tiktok*/
 .env
 favorites.txt
+
+# Explicitly shared export lists; other personal/runtime files stay ignored.
+!lists/favorites.txt
+!lists/likes.txt
+!lists/favorites-recheck.txt

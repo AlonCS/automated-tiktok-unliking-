@@ -149,3 +149,40 @@ python3 ~/Documents/tiktok-mouse-unliker/tiktok_mouse_auto.py --links ~/likes-ex
 ```
 
 The portable likes workflow uses `~/.local/state/tiktok-mouse-unliker/`, separate from the original home-directory script's calibration and progress. Follow the migration instructions above before relying on old completion records. Favorites and likes require their own bookmark/heart calibration; do not run them together.
+
+## Download the shared video lists on another laptop
+
+The October 16, 2026 export lists are now intentionally included in this branch:
+
+- [Favorites — 6,402 URLs](lists/favorites.txt)
+- [Likes — 3,671 URLs](lists/likes.txt)
+- [Favorites to recheck — 6 URLs](lists/favorites-recheck.txt)
+
+The earlier local-only notes describe the setup before these specific lists were shared. These three video-link files are now committed; the original ZIP, browser profiles, cookies, calibration, screenshots, and completion files are still excluded.
+
+On the other laptop, clone the branch (or fetch and switch to it in an existing clone), then follow the dependency setup above:
+
+```bash
+git clone --branch codex/favorites https://github.com/AlonCS/automated-tiktok-unliking-.git
+cd automated-tiktok-unliking-
+```
+
+Calibrate and test favorites using the included list:
+
+```bash
+.venv/bin/python tiktok_favorites_auto.py --links lists/favorites.txt --calibrate --turbo --limit 1
+```
+
+After a successful small trial, process all remaining favorites:
+
+```bash
+.venv/bin/python tiktok_favorites_auto.py --links lists/favorites.txt --turbo --limit 0
+```
+
+For likes, calibrate separately on a red heart and test one:
+
+```bash
+.venv/bin/python tiktok_mouse_auto.py --links lists/likes.txt --calibrate --turbo --limit 1
+```
+
+New laptops start with fresh local progress. The included lists represent the export snapshot, so some videos may already be unliked or unfavorited. Do not run both scripts simultaneously.
