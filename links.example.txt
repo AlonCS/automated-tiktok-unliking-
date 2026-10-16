@@ -1,0 +1,2 @@
+# Copy to links.txt and add your own full TikTok video links, one per line.
+# Blank lines and comments are ignored.

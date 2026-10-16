@@ -1,0 +1,13 @@
+__pycache__/
+.venv/
+*.pyc
+links.txt
+links.md
+*.mp4
+*.png
+state/
+calibration.json
+done.txt
+run.lock
+.tiktok*/
+.env
