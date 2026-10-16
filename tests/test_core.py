@@ -42,6 +42,8 @@ class CoreTests(unittest.TestCase):
             source=Path(directory)/'links.txt'
             source.write_text('# comment\n\nhttps://www.tiktok.com/@example/video/123\n')
             self.assertEqual(len(mouse.read_links(source)),1)
+            source.write_text('https://www.tiktokv.com/share/video/123/\n')
+            self.assertEqual(len(mouse.read_links(source)),1)
             source.write_text('https://example.com/video/123\n')
             with self.assertRaises(RuntimeError):
                 mouse.read_links(source)
