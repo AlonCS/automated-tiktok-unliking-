@@ -94,7 +94,7 @@ Add your saved-video URLs to `favorites.txt`, one per line. Favorites also accep
 .venv/bin/python tiktok_favorites_auto.py --calibrate --limit 1
 ```
 
-The script clicks a yellow bookmark once, reopens the URL using the calibrated address bar, and records completion only if the bookmark is gray. It stops on an unknown state or failed verification. Color and movement checks have automated coverage; the favorites script still needs a one-video live trial before a long run.
+The script clicks a yellow bookmark once, reopens the URL using the calibrated address bar, and records completion only if the bookmark is gray. It stops on an unknown state or failed verification. Color and movement checks have automated coverage. On October 16, 2026, a live one-video test and a five-video turbo batch both passed on Ubuntu/X11: each yellow bookmark was clicked once and confirmed gray after reopening the URL. New laptops and Chrome layouts still require calibration and a small trial.
 
 ```bash
 # Five-video trial after confirming the first test worked
@@ -105,3 +105,21 @@ The script clicks a yellow bookmark once, reopens the URL using the calibrated a
 ```
 
 Favorites use a separate local state directory, `~/.local/state/tiktok-mouse-unfavoriter/` (or under `XDG_STATE_HOME`), so liked-video progress and calibration are not reused. Do not run the favorites and likes scripts simultaneously: both control the same desktop mouse and clipboard. The same stop controls and fixed-window requirements apply.
+
+### Resume a full favorites run on this laptop
+
+With the export-derived list at `~/favorites.txt` and the repository at `~/Documents/tiktok-mouse-unliker`, the tested system Python command is:
+
+```bash
+python3 ~/Documents/tiktok-mouse-unliker/tiktok_favorites_auto.py --links ~/favorites.txt --turbo --limit 0
+```
+
+`--limit 0` processes all remaining links, skipping URLs already recorded as complete. Switch to the calibrated Chrome window within five seconds and leave its position, size, and zoom unchanged. Move the pointer to the screen's top-left corner to stop. The script also stops on lost focus, a moved window, unknown bookmark state, or failed verification.
+
+If Chrome was moved or resized, recalibrate and test five videos before resuming the full run:
+
+```bash
+python3 ~/Documents/tiktok-mouse-unliker/tiktok_favorites_auto.py --links ~/favorites.txt --calibrate --turbo --limit 5
+```
+
+During the first countdown hover at the yellow bookmark's center; during the second hover at the middle of Chrome's address bar. On another laptop, use the repository-relative `.venv/bin/python` commands above after installing dependencies. Transfer your private favorites list and optional progress file separately; neither belongs in Git.
