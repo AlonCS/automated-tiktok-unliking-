@@ -25,7 +25,7 @@ Run these commands from the cloned repository directory. `gnome-screenshot` prov
 cp links.example.txt links.txt
 ```
 
-Edit `links.txt` to contain full HTTPS TikTok video URLs, one per line. A list of confirmed liked videos gives fewer uncertain states. Blank lines and lines starting with `#` are ignored. Personal links are ignored by Git.
+Edit `links.txt` to contain full HTTPS TikTok video URLs, one per line. A list of confirmed liked videos gives fewer uncertain states. Blank lines and lines starting with `#` are ignored. Custom `links.txt` files are ignored by Git; the explicitly shared export lists are under `lists/`.
 
 ## Calibrate and test one video
 
@@ -62,11 +62,11 @@ Calibration, screenshot crops, lock, and completed URLs live locally under:
 ~/.local/state/tiktok-mouse-unliker/
 ```
 
-`XDG_STATE_HOME` is respected, and `--state-dir` overrides this location. Share code through GitHub; transfer the private list and progress separately. Do not transfer calibration: recalibrate on the other laptop.
+`XDG_STATE_HOME` is respected, and `--state-dir` overrides this location. Share code and the included `lists/` files through GitHub; transfer any additional private lists and progress separately. Do not transfer calibration: recalibrate on the other laptop.
 
 To migrate progress from the original home-directory script, copy `~/tiktok_mouse_done.txt` into `~/.local/state/tiktok-mouse-unliker/done.txt` on the other laptop (create the directory first). Transfer the source file privately; it contains your video links. Completed entries match exact URLs, independent of list order. `--start` refers to positions in the list you supply, so a newly exported list may use different positions.
 
-Keep browser profiles, cookies, passwords, personal lists, progress, screenshots, and calibration out of the repository. No browser login data is required by this tool.
+Keep browser profiles, cookies, passwords, additional private lists, progress, screenshots, and calibration out of the repository. Only the explicitly shared export lists under `lists/` are committed. No browser login data is required by this tool.
 
 ## Checks
 
@@ -122,7 +122,7 @@ If Chrome was moved or resized, recalibrate and test five videos before resuming
 python3 ~/Documents/tiktok-mouse-unliker/tiktok_favorites_auto.py --links ~/favorites.txt --calibrate --turbo --limit 5
 ```
 
-During the first countdown hover at the yellow bookmark's center; during the second hover at the middle of Chrome's address bar. On another laptop, use the repository-relative `.venv/bin/python` commands above after installing dependencies. Transfer your private favorites list and optional progress file separately; neither belongs in Git.
+During the first countdown hover at the yellow bookmark's center; during the second hover at the middle of Chrome's address bar. On another laptop, use the repository-relative `.venv/bin/python` commands above after installing dependencies. Use the included `lists/favorites.txt` on another laptop; transfer any additional private list and optional progress file separately.
 
 ### Latest local export snapshot — October 16, 2026
 
@@ -134,7 +134,7 @@ The extracted lists on the working laptop are:
 - `~/likes-export.txt`: latest liked-video links.
 - `~/favorites-recheck.txt`: six videos still listed in the latest export despite existing completed-favorite records. This discrepancy requires checking; the export alone does not establish its cause.
 
-Previous list versions were backed up locally, and progress was preserved. No batch was automatically started when the lists were updated. Both scripts on this branch accept TikTok's `tiktokv.com/share/video/.../` export links. These files and their contents are not included in GitHub; transfer them privately to another laptop. Existing completion records still cause matching URLs to be skipped, including the six recheck entries. A recheck needs deliberate inspection rather than assuming a normal resumed run will revisit them.
+Previous list versions were backed up locally, and progress was preserved. No batch was automatically started when the lists were updated. Both scripts on this branch accept TikTok's `tiktokv.com/share/video/.../` export links. Copies of these three lists are included under `lists/` for use on another laptop; calibration and completion files stay local. Existing completion records still cause matching URLs to be skipped, including the six recheck entries. A recheck needs deliberate inspection rather than assuming a normal resumed run will revisit them.
 
 Use the latest favorites list with:
 
@@ -158,7 +158,7 @@ The October 16, 2026 export lists are now intentionally included in this branch:
 - [Likes — 3,671 URLs](lists/likes.txt)
 - [Favorites to recheck — 6 URLs](lists/favorites-recheck.txt)
 
-The earlier local-only notes describe the setup before these specific lists were shared. These three video-link files are now committed; the original ZIP, browser profiles, cookies, calibration, screenshots, and completion files are still excluded.
+These three video-link files are committed; the original ZIP, browser profiles, cookies, calibration, screenshots, and completion files are still excluded.
 
 On the other laptop, clone the branch (or fetch and switch to it in an existing clone), then follow the dependency setup above:
 
