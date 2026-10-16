@@ -123,3 +123,29 @@ python3 ~/Documents/tiktok-mouse-unliker/tiktok_favorites_auto.py --links ~/favo
 ```
 
 During the first countdown hover at the yellow bookmark's center; during the second hover at the middle of Chrome's address bar. On another laptop, use the repository-relative `.venv/bin/python` commands above after installing dependencies. Transfer your private favorites list and optional progress file separately; neither belongs in Git.
+
+### Latest local export snapshot — October 16, 2026
+
+The latest supplied export contains **6,402 favorite videos** and **3,671 liked videos**. These are snapshot counts, not live account counts. The previous supplied export contained 6,404 favorites and 6,000 likes.
+
+The extracted lists on the working laptop are:
+
+- `~/favorites.txt`: latest favorite-video links.
+- `~/likes-export.txt`: latest liked-video links.
+- `~/favorites-recheck.txt`: six videos still listed in the latest export despite existing completed-favorite records. This discrepancy requires checking; the export alone does not establish its cause.
+
+Previous list versions were backed up locally, and progress was preserved. No batch was automatically started when the lists were updated. Both scripts on this branch accept TikTok's `tiktokv.com/share/video/.../` export links. These files and their contents are not included in GitHub; transfer them privately to another laptop. Existing completion records still cause matching URLs to be skipped, including the six recheck entries. A recheck needs deliberate inspection rather than assuming a normal resumed run will revisit them.
+
+Use the latest favorites list with:
+
+```bash
+python3 ~/Documents/tiktok-mouse-unliker/tiktok_favorites_auto.py --links ~/favorites.txt --turbo --limit 5
+```
+
+For the latest liked-video list, use the portable script on this branch:
+
+```bash
+python3 ~/Documents/tiktok-mouse-unliker/tiktok_mouse_auto.py --links ~/likes-export.txt --calibrate --turbo --limit 1
+```
+
+The portable likes workflow uses `~/.local/state/tiktok-mouse-unliker/`, separate from the original home-directory script's calibration and progress. Follow the migration instructions above before relying on old completion records. Favorites and likes require their own bookmark/heart calibration; do not run them together.
