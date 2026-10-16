@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import tempfile
 from unittest.mock import patch
 from PIL import Image, ImageDraw
 
@@ -33,6 +34,15 @@ class FavoritesTests(unittest.TestCase):
         with patch.object(favorites,'guard'),patch.object(favorites.ImageGrab,'grab',return_value=screen):
             self.assertTrue(favorites.locate_yellow_bookmark(config))
         self.assertEqual((config['x'],config['y']),(320,400))
+
+    def test_export_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source=Path(directory)/'favorites.txt'
+            source.write_text('https://www.tiktokv.com/share/video/7691705879225273613/\n')
+            self.assertEqual(len(favorites.read_links(source)),1)
+            source.write_text('https://example.com/share/video/123/\n')
+            with self.assertRaises(RuntimeError):
+                favorites.read_links(source)
 
     def test_separate_state(self):
         self.assertEqual(favorites.ROOT.name,'tiktok-mouse-unfavoriter')

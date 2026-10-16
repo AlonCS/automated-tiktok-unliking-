@@ -88,7 +88,7 @@ git switch codex/favorites
 cp favorites.example.txt favorites.txt
 ```
 
-Add your saved-video URLs to `favorites.txt`, one per line. Open a saved video in regular Chrome and calibrate on the center of its **yellow bookmark**, then on the address bar:
+Add your saved-video URLs to `favorites.txt`, one per line. Favorites also accepts the `https://www.tiktokv.com/share/video/.../` URLs found in TikTok TXT exports. Open a saved video in regular Chrome and calibrate on the center of its **yellow bookmark**, then on the address bar:
 
 ```bash
 .venv/bin/python tiktok_favorites_auto.py --calibrate --limit 1

@@ -127,7 +127,7 @@ def read_links(path):
         if not link or link.startswith('#'):
             continue
         parsed = urlsplit(link)
-        if parsed.scheme != 'https' or parsed.hostname not in ('www.tiktok.com', 'tiktok.com') or '/video/' not in parsed.path:
+        if parsed.scheme != 'https' or parsed.hostname not in ('www.tiktok.com', 'tiktok.com', 'www.tiktokv.com', 'tiktokv.com') or '/video/' not in parsed.path:
             raise RuntimeError('Each nonempty line must be a full HTTPS TikTok video URL.')
         links.append(link)
     return links
