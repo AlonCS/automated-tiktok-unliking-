@@ -64,9 +64,12 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--calibrate',action='store_true')
     parser.add_argument('--limit',type=int,default=5,help='Number of videos; 0 continues until stopped.')
-    parser.add_argument('--delay',type=float,default=3,help='Wait after a heart click and after advancing (minimum 2 seconds).')
+    parser.add_argument('--fast',action='store_true',help='Use one-second waits while retaining heart checks.')
+    parser.add_argument('--delay',type=float,default=None,help='Override wait after a click and advance (minimum 1 second).')
     args=parser.parse_args()
-    if args.limit<0 or args.delay<2:parser.error('Use a nonnegative limit and a delay of at least 2 seconds.')
+    if args.delay is None:
+        args.delay=1 if args.fast else 3
+    if args.limit<0 or args.delay<1:parser.error('Use a nonnegative limit and a delay of at least 1 second.')
     if os.environ.get('XDG_SESSION_TYPE')!='x11':parser.error('Requires Ubuntu on Xorg/X11.')
     ROOT.mkdir(parents=True,exist_ok=True)
     lock=(ROOT/'run.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)

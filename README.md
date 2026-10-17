@@ -216,3 +216,11 @@ For a continuous viewer run until manually stopped (or an uncertain state stops 
 ```
 
 Add `--calibrate` if the heart/arrow positions have not yet been captured or the window moved. No reload or link navigation is performed.
+
+For faster viewer clicks, `--fast` reduces the waits after unliking and advancing from three seconds to one second, while retaining the repeated heart-state checks and loading retries:
+
+```bash
+.venv/bin/python tiktok_likes_viewer.py --fast --limit 0
+```
+
+Stop and restart the process to pick up this option. This still does not reload or open links; confirm results on your phone. Omit `--fast` to return to the three-second waits.
