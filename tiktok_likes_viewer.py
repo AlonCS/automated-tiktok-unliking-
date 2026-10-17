@@ -22,9 +22,26 @@ def capture_point(label):
     return point['WINDOW'],int(point['X']),int(point['Y'])
 
 
+def viewer_state(config):
+    # A new video can hydrate slowly or shift the action controls.
+    for attempt in range(6):
+        base.guard(config)
+        current=base.state(config)
+        if current != 'unknown':
+            return current
+        base.locate_red_heart(config)
+        current=base.state(config)
+        if current != 'unknown':
+            return current
+        if attempt < 5:
+            print('Waiting for the next video heart...',flush=True)
+            base.wait(1,config)
+    return 'unknown'
+
+
 def run_step(config,delay):
     base.guard(config)
-    current=base.state(config)
+    current=viewer_state(config)
     if current=='unknown':
         raise RuntimeError('Heart is uncertain. Stopped without clicking or advancing.')
     if current=='red':
@@ -68,6 +85,7 @@ def main():
         if other!=window:raise RuntimeError('Both controls must be in the same Chrome window.')
         if abs(nx-x)<25 and abs(ny-y)<25:raise RuntimeError('Next arrow overlaps heart; recalibrate.')
         config.update(next_x=nx,next_y=ny)
+        base.xd('windowactivate','--sync',window)
         config_path.write_text(json.dumps(config))
     else:
         config=json.loads(config_path.read_text())

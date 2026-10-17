@@ -19,13 +19,19 @@ class ViewerTests(unittest.TestCase):
         self.assertEqual(sum(c.args==('click','1') for c in calls),1)
         self.assertFalse(any(c.args[0]=='key' for c in calls))
 
+    def test_loading_heart_is_relocated(self):
+        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'state',side_effect=['unknown','red']),patch.object(viewer.base,'locate_red_heart') as locate:
+            self.assertEqual(viewer.viewer_state({'x':100,'y':200}),'red')
+            locate.assert_called_once()
+
     def test_gray_sends_no_click(self):
         result,calls=self.exercise(['gray'])
         self.assertEqual(result,'already_gray')
         self.assertEqual(calls,[])
 
     def test_unknown_stops(self):
-        with self.assertRaises(RuntimeError):self.exercise(['unknown'])
+        with patch.object(viewer,'viewer_state',return_value='unknown'):
+            with self.assertRaises(RuntimeError):self.exercise([])
 
     def test_failed_unlike_never_reclicks(self):
         with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer.base,'state',side_effect=['red','red','red']),patch.object(viewer.base,'xd') as xd:
