@@ -224,3 +224,11 @@ For faster viewer clicks, `--fast` reduces the waits after unliking and advancin
 ```
 
 Stop and restart the process to pick up this option. This still does not reload or open links; confirm results on your phone. Omit `--fast` to return to the three-second waits.
+
+A shorter optional viewer wait can be tested with `--delay 0.5` (the minimum):
+
+```bash
+.venv/bin/python tiktok_likes_viewer.py --delay 0.5 --limit 5
+```
+
+Heart checks and loading retries remain enabled. A short delay can advance before a new video has settled; verify a small trial on your phone before a continuous run.
