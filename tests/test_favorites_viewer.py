@@ -29,14 +29,15 @@ class FavoritesViewerTests(unittest.TestCase):
         self.assertEqual(result,'already_gray')
         self.assertEqual(calls,[])
 
-    def test_unknown_stops(self):
+    def test_unknown_skips_without_click(self):
         with patch.object(viewer,'viewer_state',return_value='unknown'):
-            with self.assertRaises(RuntimeError):self.exercise([])
+            result,calls=self.exercise([])
+            self.assertEqual(result,'skipped_unknown')
+            self.assertEqual(calls,[])
 
-    def test_failed_confirmation_stops_without_second_click(self):
+    def test_failed_confirmation_skips_without_second_click(self):
         with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer,'confirm_gray',return_value=False),patch.object(viewer.base,'state',side_effect=['yellow','yellow']),patch.object(viewer.base,'xd') as xd:
-            with self.assertRaises(RuntimeError):
-                viewer.run_step({'x':100,'y':200},.5)
+            self.assertEqual(viewer.run_step({'x':100,'y':200},.5),'skipped_unconfirmed')
             self.assertEqual(sum(c.args==('click','1') for c in xd.call_args_list),1)
 
     def test_confirmation_needs_two_gray_readings(self):

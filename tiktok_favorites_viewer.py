@@ -56,16 +56,19 @@ def run_step(config,delay):
     base.guard(config)
     current=viewer_state(config)
     if current=='unknown':
-        raise RuntimeError('Bookmark is uncertain. Stopped without clicking or advancing.')
+        print('Bookmark uncertain; skipping without clicking.',flush=True)
+        return 'skipped_unknown'
     if current=='yellow':
         base.guard(config)
         if base.state(config)!='yellow':
-            raise RuntimeError('Bookmark changed before click; stopped.')
+            print('Bookmark changed before click; skipping without clicking.',flush=True)
+            return 'skipped_changed'
         base.xd('mousemove',config['x'],config['y'])
         base.xd('click','1')
         base.xd('mousemove',config['x']+40,config['y'])
         if not confirm_gray(config,delay):
-            raise RuntimeError('Unfavorite did not remain gray. No second bookmark click sent.')
+            print('Unfavorite not confirmed; skipping with no second bookmark click.',flush=True)
+            return 'skipped_unconfirmed'
         print('One unfavorite click; bookmark observed gray. Persistence is not verified by reload.',flush=True)
         return 'clicked_then_gray'
     print('Bookmark already gray; no bookmark click sent.',flush=True)
