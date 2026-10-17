@@ -9,7 +9,7 @@ import tiktok_favorites_viewer as viewer
 class FavoritesViewerTests(unittest.TestCase):
     def exercise(self,states):
         config={'x':100,'y':200}
-        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer.base,'state',side_effect=states),patch.object(viewer.base,'xd') as xd:
+        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer,'confirm_gray',return_value=True),patch.object(viewer.base,'state',side_effect=states),patch.object(viewer.base,'xd') as xd:
             result=viewer.run_step(config,3)
             return result,xd.call_args_list
 
@@ -34,7 +34,12 @@ class FavoritesViewerTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):self.exercise([])
 
     def test_failed_confirmation_stops_without_second_click(self):
-        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer.base,'state',side_effect=['yellow','yellow','yellow']),patch.object(viewer.base,'xd') as xd:
+        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'wait'),patch.object(viewer,'confirm_gray',return_value=False),patch.object(viewer.base,'state',side_effect=['yellow','yellow']),patch.object(viewer.base,'xd') as xd:
             with self.assertRaises(RuntimeError):
                 viewer.run_step({'x':100,'y':200},.5)
             self.assertEqual(sum(c.args==('click','1') for c in xd.call_args_list),1)
+
+    def test_confirmation_needs_two_gray_readings(self):
+        with patch.object(viewer.base,'guard'),patch.object(viewer.base,'patch'),patch.object(viewer.base,'classify',side_effect=['yellow','gray','gray']),patch.object(viewer.base,'wait') as wait:
+            self.assertTrue(viewer.confirm_gray({'x':100,'y':200,'mask':[]},.5))
+            self.assertEqual(wait.call_count,2)

@@ -39,6 +39,19 @@ def viewer_state(config):
     return 'unknown'
 
 
+def confirm_gray(config,timeout):
+    deadline=time.monotonic()+max(2,timeout)
+    matches=0
+    while time.monotonic()<deadline:
+        base.guard(config)
+        current=base.classify(base.patch(config['x'],config['y']),config['mask'])
+        matches=matches+1 if current=='gray' else 0
+        if matches>=2:
+            return True
+        base.wait(.2,config)
+    return False
+
+
 def run_step(config,delay):
     base.guard(config)
     current=viewer_state(config)
@@ -51,8 +64,7 @@ def run_step(config,delay):
         base.xd('mousemove',config['x'],config['y'])
         base.xd('click','1')
         base.xd('mousemove',config['x']+40,config['y'])
-        base.wait(delay,config)
-        if base.state(config)!='gray':
+        if not confirm_gray(config,delay):
             raise RuntimeError('Unfavorite did not remain gray. No second bookmark click sent.')
         print('One unfavorite click; bookmark observed gray. Persistence is not verified by reload.',flush=True)
         return 'clicked_then_gray'
