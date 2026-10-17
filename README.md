@@ -232,3 +232,19 @@ A shorter optional viewer wait can be tested with `--delay 0.5` (the minimum):
 ```
 
 Heart checks and loading retries remain enabled. A short delay can advance before a new video has settled; verify a small trial on your phone before a continuous run.
+
+## Favorites viewer mode: bookmark, then next arrow
+
+Open a video from your profile's Favorites/Saved list in regular Chrome, then calibrate the **yellow bookmark** followed by the **lower next-video arrow**:
+
+```bash
+.venv/bin/python tiktok_favorites_viewer.py --calibrate --delay 0.5 --limit 5
+```
+
+After checking the first batch on your phone, continue without recalibration:
+
+```bash
+.venv/bin/python tiktok_favorites_viewer.py --delay 0.5 --limit 0
+```
+
+This viewer script performs no reloads, URL opening, or address-bar operations. It clicks yellow bookmarks once, checks for gray, and advances using the calibrated arrow. Gray bookmarks receive no toggle click. Unknown states stop the run. Its separate calibration and observations are under `~/.local/state/tiktok-favorites-viewer/`. Visible gray is not proof of server persistence; verify on your phone. Stop the likes script before running favorites. Live testing of this viewer variant is still required.
