@@ -190,3 +190,21 @@ New laptops start with fresh local progress. The included lists represent the ex
 ### Unavailable liked videos
 
 The likes script checks an unknown-heart page for an explicit unavailable-video message by copying the page text through native keyboard input. Confirmed unavailable links are skipped without a heart click and recorded separately in the likes state directory's `unavailable.txt`; normal resumed runs skip them. Remove an entry from that file to retry it later. Generic loading, access errors, and uncertain heart states still stop the run. This text check changes the clipboard; it does not use Playwright.
+
+## Likes viewer mode: heart, then next arrow
+
+`tiktok_likes_viewer.py` works inside the profile Likes video viewer using only calibrated mouse clicks. It does not open list URLs, touch the address bar, or reload the page. Open the viewer manually on a video with a red heart, then run:
+
+```bash
+.venv/bin/python tiktok_likes_viewer.py --calibrate --limit 5
+```
+
+First calibrate the red heart; then calibrate the lower next-video arrow, each with its own eight-second countdown. Keep the window and layout fixed. After calibration it clicks a red heart once, waits three seconds, checks for gray, and clicks next. Gray hearts are skipped without a heart click; unknown states and failed changes stop the batch. Move the pointer to the screen's top-left corner or change focus to stop between operations.
+
+This mode observes the visible heart only. It does not prove the unlike persisted on TikTok's server or prove that the next arrow advanced to a different video. Confirm the first batch on your phone before increasing the batch size. It keeps observations separately under `~/.local/state/tiktok-likes-viewer/` and does not mark URL-list entries as verified complete. Tests cover click counts and stop behavior; a live trial is required for the new viewer layout.
+
+To run another bounded batch without recalibrating:
+
+```bash
+.venv/bin/python tiktok_likes_viewer.py --limit 5
+```
