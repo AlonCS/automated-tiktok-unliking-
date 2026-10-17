@@ -51,8 +51,11 @@ def run_step(config,delay):
         base.xd('mousemove',config['x'],config['y'])
         base.xd('click','1')
         base.xd('mousemove',config['x']+40,config['y'])
-        print('Sent one unfavorite click; result not checked.',flush=True)
-        return 'clicked_unverified'
+        base.wait(delay,config)
+        if base.state(config)!='gray':
+            raise RuntimeError('Unfavorite did not remain gray. No second bookmark click sent.')
+        print('One unfavorite click; bookmark observed gray. Persistence is not verified by reload.',flush=True)
+        return 'clicked_then_gray'
     print('Bookmark already gray; no bookmark click sent.',flush=True)
     return 'already_gray'
 
