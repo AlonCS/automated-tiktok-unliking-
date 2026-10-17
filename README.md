@@ -208,3 +208,11 @@ To run another bounded batch without recalibrating:
 ```bash
 .venv/bin/python tiktok_likes_viewer.py --limit 5
 ```
+
+For a continuous viewer run until manually stopped (or an uncertain state stops it):
+
+```bash
+.venv/bin/python tiktok_likes_viewer.py --limit 0
+```
+
+Add `--calibrate` if the heart/arrow positions have not yet been captured or the window moved. No reload or link navigation is performed.

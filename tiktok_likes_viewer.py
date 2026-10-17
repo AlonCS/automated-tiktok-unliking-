@@ -3,6 +3,7 @@
 import argparse
 import fcntl
 import json
+import itertools
 import os
 from pathlib import Path
 import subprocess
@@ -45,10 +46,10 @@ def run_step(config,delay):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--calibrate',action='store_true')
-    parser.add_argument('--limit',type=int,default=5,help='Number of videos; use a positive bounded batch.')
+    parser.add_argument('--limit',type=int,default=5,help='Number of videos; 0 continues until stopped.')
     parser.add_argument('--delay',type=float,default=3,help='Wait after a heart click and after advancing (minimum 2 seconds).')
     args=parser.parse_args()
-    if args.limit<1 or args.delay<2:parser.error('Use a positive limit and a delay of at least 2 seconds.')
+    if args.limit<0 or args.delay<2:parser.error('Use a nonnegative limit and a delay of at least 2 seconds.')
     if os.environ.get('XDG_SESSION_TYPE')!='x11':parser.error('Requires Ubuntu on Xorg/X11.')
     ROOT.mkdir(parents=True,exist_ok=True)
     lock=(ROOT/'run.lock').open('a');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -73,12 +74,12 @@ def main():
         print('Switch to the calibrated Chrome viewer within five seconds.',flush=True);time.sleep(5)
     config['turbo']=True
     base.xd('mousemove',config['x']+40,config['y'])
-    for i in range(args.limit):
-        print(f'Video {i+1}/{args.limit}',flush=True)
+    for i in (itertools.count() if args.limit == 0 else range(args.limit)):
+        print(f'Video {i+1}' + (f'/{args.limit}' if args.limit else ' (continuous)'),flush=True)
         result=run_step(config,args.delay)
         with (ROOT/'observations.jsonl').open('a') as out:
             out.write(json.dumps({'time':time.time(),'result':result,'saved_state_verified':False})+'\n')
-        if i+1<args.limit:
+        if args.limit == 0 or i+1<args.limit:
             base.guard(config)
             base.xd('mousemove',config['next_x'],config['next_y'])
             base.xd('click','1')
