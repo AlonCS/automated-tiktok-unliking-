@@ -133,6 +133,35 @@ def read_links(path):
     return links
 
 
+def unavailable_message(text):
+    text=' '.join(text.lower().split())
+    return any(message in text for message in (
+        'video currently unavailable', 'this video is unavailable',
+        'video is unavailable', 'video not available',
+        "couldn't find this video", 'couldn’t find this video',
+        'video has been removed', 'video was removed',
+        'this video is private', 'this video has been deleted',
+    ))
+
+
+def video_unavailable(config):
+    """Read visible page text using native selection/copy, without heart clicks."""
+    guard(config)
+    xd('key','Escape')
+    xd('key','--clearmodifiers','ctrl+a')
+    xd('key','--clearmodifiers','ctrl+c')
+    for _ in range(10):
+        CLIPBOARD.update()
+        time.sleep(.05)
+    try:
+        text=CLIPBOARD.clipboard_get()
+    except tk.TclError:
+        return False
+    finally:
+        xd('key','Escape')
+    return unavailable_message(text)
+
+
 def main():
     global ROOT, CONFIG, DONE
     parser=argparse.ArgumentParser(description=__doc__)
@@ -189,8 +218,10 @@ def main():
     config['fast']=args.fast
     xd('mousemove',config['x']+60,config['y'])
     done=set(DONE.read_text().splitlines()) if DONE.exists() else set()
+    unavailable_file=ROOT/'unavailable.txt'
+    unavailable=set(unavailable_file.read_text().splitlines()) if unavailable_file.exists() else set()
     selected=[]
-    seen=set(done)
+    seen=set(done)|unavailable
     for n,link in enumerate(links,1):
         if n>=args.start and link not in seen:
             selected.append((n,link))
@@ -210,6 +241,11 @@ def main():
                 if initial != 'unknown':
                     break
         print(f'Heart: {initial}',flush=True)
+        if initial == 'unknown' and video_unavailable(config):
+            with unavailable_file.open('a') as out:
+                out.write(link+'\n')
+            print('Video unavailable — skipping without clicking.',flush=True)
+            continue
         if initial == 'unknown':
             patch(config['x'],config['y']).save(ROOT/'tiktok_heart_unknown.png')
             raise RuntimeError('Cannot identify the heart. No click sent.')

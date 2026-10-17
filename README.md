@@ -186,3 +186,7 @@ For likes, calibrate separately on a red heart and test one:
 ```
 
 New laptops start with fresh local progress. The included lists represent the export snapshot, so some videos may already be unliked or unfavorited. Do not run both scripts simultaneously.
+
+### Unavailable liked videos
+
+The likes script checks an unknown-heart page for an explicit unavailable-video message by copying the page text through native keyboard input. Confirmed unavailable links are skipped without a heart click and recorded separately in the likes state directory's `unavailable.txt`; normal resumed runs skip them. Remove an entry from that file to retry it later. Generic loading, access errors, and uncertain heart states still stop the run. This text check changes the clipboard; it does not use Playwright.

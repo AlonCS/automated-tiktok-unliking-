@@ -17,6 +17,13 @@ def heart(color=(254, 44, 85)):
 
 
 class CoreTests(unittest.TestCase):
+    def test_unavailable_messages(self):
+        self.assertTrue(mouse.unavailable_message('Video currently unavailable'))
+        self.assertTrue(mouse.unavailable_message("Couldn't find this video"))
+        self.assertFalse(mouse.unavailable_message('Something went wrong'))
+        self.assertFalse(mouse.unavailable_message('Verify to continue'))
+        self.assertFalse(mouse.unavailable_message('Loading...'))
+
     def test_red_gray_and_blank(self):
         template = heart()
         mask = [[x,y] for y in range(25) for x in range(25) if mouse.red(template.getpixel((x,y))) ]
