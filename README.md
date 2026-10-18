@@ -250,3 +250,15 @@ After checking the first batch on your phone, continue without recalibration:
 This viewer script performs no reloads, URL opening, or address-bar operations. It checks for yellow before clicking once, waits, confirms the bookmark is gray, then advances. This checks the visible state only; inspect persistence on your phone. Gray bookmarks receive no toggle click. Unknown bookmark states, changed pre-click states, and failed post-click confirmations are logged as skipped and advance to the next video without a retry bookmark click. Focus loss, window movement, and stop controls still stop the run. Its separate calibration and observations are under `~/.local/state/tiktok-favorites-viewer/`. Visible gray is not proof of server persistence; verify on your phone. Stop the likes script before running favorites. Live testing of this viewer variant is still required.
 
 Favorites viewer confirmation checks for gray immediately and advances after two consecutive gray samples, approximately 0.2 seconds apart when the UI responds promptly. It waits up to at least two seconds before recording an unconfirmed change as skipped and advancing. This confirmation never reloads or sends another bookmark click.
+
+## Load the profile grid before calibrating
+
+Open your profile's Likes or Favorites grid (not the video viewer), then run:
+
+```bash
+.venv/bin/python tiktok_load_grid.py
+```
+
+Switch to Chrome and click empty page space within eight seconds. The loader repeatedly presses Ctrl+End, waits for loading, and checks copied page text for changes. Eight consecutive unchanged checks stop it at the bottom. It never clicks a video, like, or bookmark, opens a URL, or reloads. Once stopped, scroll back to the top, open a video yourself, and run the appropriate viewer calibration.
+
+The loader uses the clipboard, which replaces its previous contents. Keep the grid focused. Move the pointer to the screen's top-left corner, switch focus away, or press Ctrl+C to stop. Error/verification messages stop it too. If loading is slow, use `--interval 4 --stable 12`. `--max-scrolls` bounds the run (default 2000). Stable page text is a heuristic: a stalled network or virtualized grid can stop growing without all videos being loaded, and TikTok may unload tiles when scrolling away. This loads grid entries, not video files onto disk.
